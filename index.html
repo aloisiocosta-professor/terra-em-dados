@@ -44,6 +44,9 @@
             <label class="layer-row"><span class="layer-symbol production">✳</span><span class="layer-copy"><strong>Áreas produtivas</strong><small>Cultivos e atividades rurais</small></span><input type="checkbox" data-layer="producao"><span class="switch"></span></label>
           </div>
           <div class="rule"></div>
+          <div class="section-title"><h3>Dados oficiais no mapa</h3><span id="boundaryStatus">Carregando…</span></div>
+          <label class="layer-row reference-row"><span class="layer-symbol access">⌂</span><span class="layer-copy"><strong>Assentamento 17 de Abril</strong><small>Perímetro cadastrado no INCRA</small></span><input id="boundaryToggle" type="checkbox" checked><span class="switch"></span></label>
+          <div class="rule"></div>
           <div class="section-title"><h3>Registros nesta sessão</h3><span class="session-pill">TEMPORÁRIOS</span></div>
           <div id="recordList" class="record-list"><div class="empty-state"><span>⌖</span><p>Nenhum ponto marcado ainda.</p><small>Escolha uma camada e clique no mapa para criar um registro demonstrativo.</small></div></div>
           <button id="clearRecords" class="text-button" disabled>Limpar registros</button>
@@ -51,17 +54,26 @@
         </aside>
 
         <div class="map-column">
-          <div class="map-toolbar"><div><span class="map-dot"></span><span id="mapStatus">Visão geral</span><span class="toolbar-divider">/</span><span id="mapLocation">Nenhuma área selecionada</span></div><button id="locateMe" class="locate-button"><span aria-hidden="true">◎</span> Minha localização</button></div>
-          <div class="map-wrap"><div id="map" role="application" aria-label="Mapa interativo. Use os controles para navegar e clique para registrar um ponto demonstrativo."></div>
-            <div class="map-instruction" id="mapInstruction"><span>⌖</span><div><strong>Comece por um lugar</strong><small>Busque uma localidade acima para carregar o mapa.</small></div></div>
-            <div class="map-legend"><span><i></i> Registro desta sessão</span><span class="legend-disclaimer">Sem dados comunitários carregados</span></div>
+          <div class="map-toolbar"><div><span class="map-dot"></span><span id="mapStatus">Visão geral</span><span class="toolbar-divider">/</span><span id="mapLocation">Assentamento 17 de Abril · Teresina/PI</span></div><button id="locateMe" class="locate-button"><span aria-hidden="true">◎</span> Minha localização</button></div>
+          <div class="map-wrap"><div id="map" role="application" aria-label="Mapa interativo do Assentamento 17 de Abril, em Teresina, com localização da escola e perímetro cadastral do INCRA."></div>
+            <div class="map-instruction hidden" id="mapInstruction"><span>⌖</span><div><strong>Comece por um lugar</strong><small>Busque uma localidade acima para carregar o mapa.</small></div></div>
+            <div class="map-legend"><span><i></i> Escola · SEDUC-PI</span><span id="legendDisclaimer" class="legend-disclaimer">Limite INCRA: carregando…</span></div>
           </div>
-          <div class="map-footer"><span>Mapa base © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a></span><span>Selecione uma camada antes de adicionar um registro.</span></div>
+          <div class="map-footer"><span>Mapa base © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a></span><span>Limite cadastral INCRA · escola indicada pela SEDUC-PI.</span></div>
         </div>
       </section>
 
+      <section class="local-data" aria-labelledby="localDataTitle">
+        <div class="local-data-heading"><div><p class="eyebrow">CONTEXTO LOCAL · FONTE PÚBLICA</p><h2 id="localDataTitle">Um território com dados verificáveis</h2></div><span class="data-date">Consulta às fontes: 24 nov. 2026</span></div>
+        <div class="data-cards">
+          <article class="data-card"><span class="data-icon">⌂</span><div><strong>Mais de 100</strong><h3>famílias no assentamento</h3><p>A maioria descrita como agricultores familiares em notícia oficial publicada em 7 out. 2025.</p><a href="https://www.pi.gov.br/governo-do-estado-transforma-estrutura-de-escola-da-zona-rural-de-teresina-que-e-destaque-em-competicoes-de-educacao/" target="_blank" rel="noreferrer">Governo do Piauí · notícia de 2025 ↗</a></div></article>
+          <article class="data-card"><span class="data-icon">◎</span><div><strong>Escola Lucas Meireles Alves</strong><h3>Referência territorial mapeada</h3><p>Localização associada ao mapa da SEDUC-PI: Assentamento 17 de Abril, zona rural de Teresina.</p><a href="https://seduc.pi.gov.br/noticias/noticia/13080/governador-rafael-fonteles-e-secretario-washington-bandeira-inauguram-reforma-e-moderniza-ao-de-escola-em-assentamento-na-zona-rural-de-teresina" target="_blank" rel="noreferrer">SEDUC-PI · fonte institucional ↗</a></div></article>
+          <article class="data-card"><span class="data-icon">▱</span><div><strong>Perímetro do assentamento</strong><h3>Camada geográfica do INCRA</h3><p>Consulta espacial ao serviço público de assentamentos. O serviço não informa no metadata a data de atualização.</p><a href="https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/assentamentos_incra/FeatureServer/1" target="_blank" rel="noreferrer">Serviço geográfico · créditos INCRA ↗</a></div></article>
+        </div>
+        <p class="data-caveat">A quantidade de famílias é um dado reportado em 2025, não um censo atual. O ponto da escola deriva do mapa institucional vinculado pela SEDUC-PI; o contorno é uma referência cadastral e pode não representar limites de uso ou posse. O mapa base do OpenStreetMap é colaborativo e sua cobertura varia.</p>
+      </section>
       <section class="principles" id="sobre"><div><p class="eyebrow">COMO LER ESTE PROTÓTIPO</p><h2>Dados com contexto,<br><em>decisões com cuidado.</em></h2></div><div class="principle-grid"><article><span>01</span><h3>Situar</h3><p>Localizar informações ajuda a observar como elementos se relacionam no espaço.</p></article><article><span>02</span><h3>Contextualizar</h3><p>Um mapa não explica tudo: a origem e o contexto de cada dado importam.</p></article><article><span>03</span><h3>Participar</h3><p>Conhecimentos locais podem enriquecer a compreensão do território com respeito e consentimento.</p></article></div></section>
-      <section class="scope-note"><strong>Sobre os dados</strong><p>Este é um protótipo de interface. Não há levantamento de campo, dados locais validados, armazenamento de contribuições nem avaliação com usuários. Os pontos que você criar são temporários e servem somente para demonstrar a interação.</p></section>
+      <section class="scope-note"><strong>Sobre os dados</strong><p>Este protótipo combina uma notícia oficial estadual datada, uma localização escolar associada à SEDUC-PI e uma camada geográfica do INCRA consultada em serviço mantido pela PAMGIA/IBAMA. Os registros criados por você continuam temporários e servem apenas para demonstrar a interação. Não houve levantamento de campo nem validação comunitária.</p></section>
     </main>
     <footer><a class="footer-brand" href="#inicio">terra<span>em</span>dados</a><span>Projeto Integrador · Geotecnologias e comunidades rurais</span><a href="#sobre">Conheça a proposta ↑</a></footer>
 
