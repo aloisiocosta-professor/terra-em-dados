@@ -1,16 +1,16 @@
 # Terra em Dados
 
-Prot�tipo est�tico da proposta conceitual do Projeto Integrador. Apresenta um explorador de mapa, camadas tem�ticas e cria��o de pontos tempor�rios para demonstrar uma poss�vel intera��o.
+Protótipo estático da proposta conceitual do Projeto Integrador. Apresenta um explorador de mapas, camadas temáticas e criação de pontos temporários para demonstrar uma possível interação.
 
 ## Escopo e limites
 
-- Os pontos criados ficam apenas na mem�ria da aba e desaparecem ao recarregar.
-- Nenhuma contribui��o � enviada, compartilhada ou persistida.
-- N�o h� conjunto de dados local validado nem coleta de campo.
-- A busca de lugares usa o servi�o Nominatim; o mapa base usa OpenStreetMap. Ambos requerem conex�o.
-- O prot�tipo n�o constitui evid�ncia de usabilidade, efic�cia ou aceita��o comunit�ria.
+- Os pontos criados ficam apenas na memória desta aba e desaparecem ao recarregar a página.
+- Nenhuma contribuição é enviada, compartilhada ou persistida.
+- O protótipo não contém dados locais validados nem resultados de coleta de campo.
+- A busca de lugares usa o serviço Nominatim; o mapa base usa OpenStreetMap. Ambos requerem conexão com a internet.
+- O protótipo não constitui evidência de usabilidade, eficácia ou aceitação comunitária.
 
-## Execu��o local
+## Execução local
 
 Requer Node.js 24 ou superior.
 
@@ -18,9 +18,8 @@ Requer Node.js 24 ou superior.
 npm run build
 ```
 
-O resultado est�tico � gerado em `dist/`. Abra `index.html` por um servidor est�tico para usar o mapa.
+O site estático é gerado em `dist/`. Abra `index.html` por meio de um servidor estático para usar o mapa.
 
-## Publica��o
+## Publicação
 
-O workflow `.github/workflows/pages.yml` compila com Node.js 24 e publica `dist/` no GitHub Pages em cada push para `main` ou por execu��o manual. Nas configura��es do reposit�rio, selecione **Settings  Pages  Build and deployment  Source: GitHub Actions**.
-
+O workflow `.github/workflows/pages.yml` compila com Node.js 24 e publica `dist/` no GitHub Pages a cada envio para `main` ou por execução manual. Nas configurações do repositório, selecione **Settings → Pages → Build and deployment → Source: GitHub Actions**.
