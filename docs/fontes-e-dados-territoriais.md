@@ -53,3 +53,7 @@ Os filtros temáticos consultam feições OpenStreetMap dentro de **2 km do cent
 A cor da camada corresponde à cor do controle temático. Popups informam o nome, tags relevantes e identificador da feição no OSM. Uma feição recebe uma categoria principal para evitar desenho duplicado. O protótipo consulta nós e vias; áreas complexas mapeadas somente como relações podem não aparecer. O limite de 2 km e a seleção de tags são filtros de visualização do protótipo, não uma classificação oficial do território.
 
 A base segue o modelo colaborativo e licença ODbL do OpenStreetMap. A aplicação mantém a atribuição no mapa e no rodapé. Categorias com zero feições mostram esse resultado sem inferir ausência física do recurso. Tags e cobertura local podem variar; não há validação de campo.
+
+## Conferência de funcionamento dos filtros
+
+Na validação visual pelo navegador em **24/11/2026**, com o mapa centrado na referência escolar e raio de consulta de 2 km, o filtro de **Estradas e acessibilidade** retornou 21 feições OSM e o filtro de **Água e recursos hídricos** retornou 7. **Educação** não retornou feições OSM nesse raio; o marcador oficial da escola SEDUC-PI é mostrado separadamente e o estado do filtro informa essa distinção. Esses números registram apenas a resposta da consulta nessa data e podem mudar quando a base pública for atualizada.
