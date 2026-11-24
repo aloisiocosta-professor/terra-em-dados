@@ -1,85 +1,129 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f4f5ef">
-    <meta name="description" content="Protótipo demonstrativo para explorar informações territoriais e camadas comunitárias.">
-    <title>Terra em Dados — território em perspectiva</title>
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://tile.openstreetmap.org">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <header class="topbar">
-      <a class="brand" href="#inicio" aria-label="Terra em Dados, início">
-        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M5 9 14 6l9 3 8-3v21l-8 3-9-3-9 3z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 6v21M23 9v21" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M23 10a4 4 0 0 0-4 4c0 3.2 4 7.5 4 7.5s4-4.3 4-7.5a4 4 0 0 0-4-4zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg></span>
-        <span><strong>terra<span>em</span>dados</strong><small>território em perspectiva</small></span>
-      </a>
-      <nav class="top-nav" aria-label="Navegação principal">
-        <a class="active" href="#mapa">Explorar mapa</a><a href="#sobre">Sobre o projeto</a>
-      </nav>
-      <div class="prototype-tag"><span></span> Protótipo demonstrativo</div>
-    </header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f3ea">
+  <meta name="description" content="Explore mapas e informações territoriais sobre comunidades rurais com dados abertos e contextualizados.">
+  <title>Terra em Dados — seu território, em dados</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Terra em Dados, início">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M5 9 14 6l9 3 8-3v21l-8 3-9-3-9 3z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 6v21M23 9v21" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M23 10a4 4 0 0 0-4 4c0 3.2 4 7.5 4 7.5s4-4.3 4-7.5a4 4 0 0 0-4-4zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg></span>
+      <strong>terra em dados<span>.</span></strong>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a href="#mapa">Mapa</a><a href="#categorias">Comunidades</a><a href="#indicadores">Indicadores</a><a href="#participar">Contribuir</a><a href="#sobre">Sobre</a>
+    </nav>
+    <a class="header-action" href="#mapa"><span aria-hidden="true">↗</span> Explorar</a>
+  </header>
 
-    <main id="inicio">
-      <section class="intro" aria-labelledby="headline">
-        <div class="intro-copy"><p class="eyebrow">GEOTECNOLOGIAS · INTELIGÊNCIA TERRITORIAL · PARTICIPAÇÃO</p><h1 id="headline">Como organizar<br><em>o território?</em></h1><p>Explore camadas do lugar, observe relações e descubra como diferentes informações ajudam a compreender o espaço.</p></div>
-        <div class="intro-note"><span class="note-icon" aria-hidden="true">✳</span><div><strong>Conhecimento compartilhado</strong><p>Dados e experiências podem se complementar. Cada registro precisa de contexto, origem e cuidado.</p></div></div>
-      </section>
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="hero-kicker"><i></i> Conheça seu território. Transforme informações em possibilidades.</p>
+        <h1>Seu território,<br><em>em dados.</em></h1>
+        <p class="hero-description">Explore mapas, conheça recursos e participe da construção de informações sobre comunidades rurais.</p>
+        <div class="hero-actions"><a class="button-primary" href="#mapa">Explorar mapa <span aria-hidden="true">→</span></a><a class="button-secondary" href="#sobre">Conhecer o projeto</a></div>
+        <form class="search hero-search" id="searchForm"><label class="visually-hidden" for="placeSearch">Buscar comunidade ou localidade</label><span aria-hidden="true">⌕</span><input id="placeSearch" type="search" placeholder="Buscar comunidade ou localidade" autocomplete="off"><button>Buscar</button></form>
+        <p class="search-hint" id="searchHint">A busca localiza um lugar para explorar no mapa.</p>
+      </div>
+      <div class="hero-map-card">
+        <div id="previewMap" role="img" aria-label="Mapa de referência do Piauí e do Nordeste"></div>
+        <div class="hero-map-caption"><span class="map-pin" aria-hidden="true">⌖</span><div><strong>Assentamento 17 de Abril</strong><small>Teresina · Piauí</small></div><a href="#mapa" aria-label="Abrir filtros do mapa">↗</a></div>
+      </div>
+      <div class="hero-contours" aria-hidden="true"></div>
+    </section>
 
-      <section class="workspace" id="mapa" aria-label="Explorador territorial">
+    <section class="stats-grid" id="indicadores" aria-label="Indicadores do protótipo">
+      <article class="stat-card"><span class="stat-icon">▤</span><div><p>Comunidades cadastradas</p><strong class="stat-empty">ⓘ Ainda sem registros</strong></div></article>
+      <article class="stat-card"><span class="stat-icon">⌖</span><div><p>Registros publicados</p><strong class="stat-empty">ⓘ Ainda sem registros</strong></div></article>
+      <article class="stat-card"><span class="stat-icon">▱</span><div><p>Categorias disponíveis</p><strong class="stat-number">8</strong><small>Categorias iniciais definidas pelo projeto</small></div></article>
+    </section>
+
+    <section class="categories section-shell" id="categorias">
+      <p class="section-kicker">Categorias territoriais</p>
+      <div class="section-heading"><h2>O que você pode descobrir?</h2><p>As categorias orientam os filtros do mapa e organizam informações por tema.</p></div>
+      <div class="category-grid">
+        <article class="category-card"><span class="category-icon water-icon">♧</span><h3>Água e recursos hídricos</h3><p>Rios, açudes, nascentes e outras feições de água mapeadas.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon access-icon">⌁</span><h3>Estradas e acessibilidade</h3><p>Estradas, caminhos, trilhas e conexões registradas.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon education-icon">⌂</span><h3>Educação</h3><p>Escolas e espaços de formação; a escola de referência vem da SEDUC-PI.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon health-icon">✚</span><h3>Saúde</h3><p>Unidades de atendimento e serviços de saúde registrados.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon production-icon">♧</span><h3>Produção rural</h3><p>Áreas e estruturas produtivas mapeadas, respeitando limites dos dados abertos.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon environment-icon">♧</span><h3>Meio ambiente</h3><p>Vegetação, áreas verdes e feições ambientais registradas.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon community-icon">♙</span><h3>Espaços comunitários</h3><p>Centros comunitários, espaços de convivência e locais coletivos.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+        <article class="category-card"><span class="category-icon infrastructure-icon">▦</span><h3>Infraestrutura e serviços</h3><p>Estruturas de utilidade pública e serviços territoriais mapeados.</p><a href="#mapa">Ver no mapa <span>→</span></a></article>
+      </div>
+    </section>
+
+    <section class="map-section section-shell" id="mapa">
+      <div class="section-heading map-heading"><div><p class="section-kicker">Exploração territorial</p><h2>Consulte as camadas do mapa</h2></div><p>Marque os temas que quer visualizar. Cada filtro exibe somente as feições correspondentes.</p></div>
+      <div class="workspace">
         <aside class="sidebar">
-          <div class="side-head"><div><p class="eyebrow">PAINEL DE EXPLORAÇÃO</p><h2>Seu território</h2></div><button id="resetView" class="icon-button" aria-label="Voltar à visão inicial" title="Voltar à visão inicial">↺</button></div>
-          <label class="search-label" for="placeSearch">Buscar um lugar</label>
-          <form class="search" id="searchForm"><input id="placeSearch" type="search" placeholder="Ex.: Teresina, PI" autocomplete="off"><button aria-label="Buscar lugar">⌕</button></form>
-          <p class="search-hint" id="searchHint">Pesquise uma localidade para aproximar o mapa.</p>
-          <div class="rule"></div>
-          <div class="section-title"><h3>Camadas de informação</h3><span id="layerCount">0 ativas</span></div>
+          <div class="side-head"><div><p class="panel-kicker">PAINEL DE EXPLORAÇÃO</p><h3>Filtros do mapa</h3></div><button id="resetView" class="icon-button" aria-label="Voltar ao Assentamento 17 de Abril" title="Voltar ao Assentamento 17 de Abril">↺</button></div>
+          <div class="section-title"><h4>Camadas temáticas</h4><span id="layerCount">0 ativas</span></div>
           <div class="layer-list">
-            <label class="layer-row"><span class="layer-symbol water">≈</span><span class="layer-copy"><strong>Recursos naturais</strong><small>Água, vegetação e áreas verdes · OpenStreetMap</small></span><input type="checkbox" data-layer="ambiente"><span class="switch"></span></label>
-            <label class="layer-row"><span class="layer-symbol access">↗</span><span class="layer-copy"><strong>Estradas e acessos</strong><small>Vias, trilhas e caminhos · OpenStreetMap</small></span><input type="checkbox" data-layer="acessos"><span class="switch"></span></label>
-            <label class="layer-row"><span class="layer-symbol community">⌂</span><span class="layer-copy"><strong>Serviços comunitários</strong><small>Equipamentos mapeados · escola SEDUC-PI + OSM</small></span><input type="checkbox" data-layer="comunidade"><span class="switch"></span></label>
-            <label class="layer-row"><span class="layer-symbol production">✳</span><span class="layer-copy"><strong>Áreas produtivas</strong><small>Uso agrícola mapeado · OpenStreetMap</small></span><input type="checkbox" data-layer="producao"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol water">♧</span><span class="layer-copy"><strong>Água e recursos hídricos</strong><small>Águas, nascentes e cursos d’água · OSM</small><small class="layer-status" data-layer-status="agua">Desativada</small></span><input type="checkbox" data-layer="agua"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol access">⌁</span><span class="layer-copy"><strong>Estradas e acessibilidade</strong><small>Vias, caminhos e trilhas · OSM</small><small class="layer-status" data-layer-status="acessos">Desativada</small></span><input type="checkbox" data-layer="acessos"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol education">⌂</span><span class="layer-copy"><strong>Educação</strong><small>Escolas e formação · SEDUC-PI + OSM</small><small class="layer-status" data-layer-status="educacao">Desativada</small></span><input type="checkbox" data-layer="educacao"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol health">✚</span><span class="layer-copy"><strong>Saúde</strong><small>Serviços e unidades de saúde · OSM</small><small class="layer-status" data-layer-status="saude">Desativada</small></span><input type="checkbox" data-layer="saude"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol production">♧</span><span class="layer-copy"><strong>Produção rural</strong><small>Uso agrícola e estruturas produtivas · OSM</small><small class="layer-status" data-layer-status="producao">Desativada</small></span><input type="checkbox" data-layer="producao"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol environment">♧</span><span class="layer-copy"><strong>Meio ambiente</strong><small>Vegetação e áreas verdes · OSM</small><small class="layer-status" data-layer-status="ambiente">Desativada</small></span><input type="checkbox" data-layer="ambiente"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol community">♙</span><span class="layer-copy"><strong>Espaços comunitários</strong><small>Centros e espaços coletivos · OSM</small><small class="layer-status" data-layer-status="comunitarios">Desativada</small></span><input type="checkbox" data-layer="comunitarios"><span class="switch"></span></label>
+            <label class="layer-row"><span class="layer-symbol infrastructure">▦</span><span class="layer-copy"><strong>Infraestrutura e serviços</strong><small>Equipamentos e serviços públicos · OSM</small><small class="layer-status" data-layer-status="infraestrutura">Desativada</small></span><input type="checkbox" data-layer="infraestrutura"><span class="switch"></span></label>
           </div>
-          <div class="rule"></div>
-          <div class="section-title"><h3>Dados oficiais no mapa</h3><span id="boundaryStatus">Carregando…</span></div>
-          <label class="layer-row reference-row"><span class="layer-symbol access">⌂</span><span class="layer-copy"><strong>Assentamento 17 de Abril</strong><small>Perímetro cadastrado no INCRA</small></span><input id="boundaryToggle" type="checkbox" checked><span class="switch"></span></label>
-          <div class="rule"></div>
-          <div class="section-title"><h3>Registros nesta sessão</h3><span class="session-pill">TEMPORÁRIOS</span></div>
-          <div id="recordList" class="record-list"><div class="empty-state"><span>⌖</span><p>Nenhum ponto marcado ainda.</p><small>Escolha uma camada e clique no mapa para criar um registro demonstrativo.</small></div></div>
-          <button id="clearRecords" class="text-button" disabled>Limpar registros</button>
-          <div class="privacy-note"><span aria-hidden="true">ⓘ</span><p>Os registros ficam apenas nesta aba e são apagados ao recarregar. Este protótipo não envia contribuições.</p></div>
+          <div class="boundary-control">
+            <div class="section-title"><h4>Limite cadastral</h4><span id="boundaryStatus">Carregando…</span></div>
+            <label class="layer-row compact"><span class="layer-symbol boundary">▱</span><span class="layer-copy"><strong>Assentamento 17 de Abril</strong><small>Perímetro da camada INCRA</small></span><input id="boundaryToggle" type="checkbox" checked><span class="switch"></span></label>
+          </div>
+          <div class="record-block"><div class="section-title"><h4>Registros desta sessão</h4><span class="session-pill">TEMPORÁRIOS</span></div>
+            <div id="recordList" class="record-list"><div class="empty-state"><span>⌖</span><p>Nenhum ponto marcado ainda.</p><small>Ative um tema e clique no mapa para criar um registro demonstrativo.</small></div></div>
+            <button id="clearRecords" class="text-button" disabled>Limpar registros</button>
+            <p class="privacy-note">ⓘ Seus registros ficam somente nesta aba e não são enviados.</p>
+          </div>
         </aside>
-
         <div class="map-column">
-          <div class="map-toolbar"><div><span class="map-dot"></span><span id="mapStatus">Visão geral</span><span class="toolbar-divider">/</span><span id="mapLocation">Assentamento 17 de Abril · Teresina/PI</span></div><button id="locateMe" class="locate-button"><span aria-hidden="true">◎</span> Minha localização</button></div>
-          <div class="map-wrap"><div id="map" role="application" aria-label="Mapa interativo do Assentamento 17 de Abril, em Teresina, com localização da escola e perímetro cadastral do INCRA."></div>
-            <div class="map-instruction hidden" id="mapInstruction"><span>⌖</span><div><strong>Comece por um lugar</strong><small>Busque uma localidade acima para carregar o mapa.</small></div></div>
-            <div class="map-legend"><span><i></i> Escola · SEDUC-PI</span><span id="legendDisclaimer" class="legend-disclaimer">Limite INCRA: carregando…</span></div>
+          <div class="map-toolbar"><div><span class="map-dot"></span><strong id="mapStatus">Mapa de referência</strong><span class="toolbar-divider">·</span><span id="mapLocation">Assentamento 17 de Abril · Teresina/PI</span></div><button id="locateMe" class="locate-button">◎ Minha localização</button></div>
+          <div class="map-wrap"><div id="map" role="application" aria-label="Mapa interativo com filtros por categoria territorial."></div>
+            <div class="map-instruction hidden" id="mapInstruction"><span>⌖</span><div><strong>Mapa interativo</strong><small>Ative filtros para consultar dados abertos.</small></div></div>
+            <div class="map-legend"><span><i></i> Escola · SEDUC-PI</span><span id="legendDisclaimer" class="legend-disclaimer">Perímetro INCRA · carregando…</span></div>
           </div>
-          <div class="map-footer"><span>Mapa base © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a></span><span>Limite cadastral INCRA · escola indicada pela SEDUC-PI.</span></div>
+          <div class="map-footer"><span>Mapa e feições temáticas © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> · ODbL</span><span>Consulta temática em raio de 3 km do centro.</span></div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="local-data" aria-labelledby="localDataTitle">
-        <div class="local-data-heading"><div><p class="eyebrow">CONTEXTO LOCAL · FONTE PÚBLICA</p><h2 id="localDataTitle">Um território com dados verificáveis</h2></div><span class="data-date">Consulta às fontes: 24 nov. 2026</span></div>
-        <div class="data-cards">
-          <article class="data-card"><span class="data-icon">⌂</span><div><strong>Mais de 100</strong><h3>famílias no assentamento</h3><p>A maioria descrita como agricultores familiares em notícia oficial publicada em 7 out. 2025.</p><a href="https://www.pi.gov.br/governo-do-estado-transforma-estrutura-de-escola-da-zona-rural-de-teresina-que-e-destaque-em-competicoes-de-educacao/" target="_blank" rel="noreferrer">Governo do Piauí · notícia de 2025 ↗</a></div></article>
-          <article class="data-card"><span class="data-icon">◎</span><div><strong>Escola Lucas Meireles Alves</strong><h3>Referência territorial mapeada</h3><p>Localização associada ao mapa da SEDUC-PI: Assentamento 17 de Abril, zona rural de Teresina.</p><a href="https://seduc.pi.gov.br/noticias/noticia/13080/governador-rafael-fonteles-e-secretario-washington-bandeira-inauguram-reforma-e-moderniza-ao-de-escola-em-assentamento-na-zona-rural-de-teresina" target="_blank" rel="noreferrer">SEDUC-PI · fonte institucional ↗</a></div></article>
-          <article class="data-card"><span class="data-icon">▱</span><div><strong>Perímetro do assentamento</strong><h3>Camada geográfica do INCRA</h3><p>Consulta espacial ao serviço público de assentamentos. O serviço não informa no metadata a data de atualização.</p><a href="https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/assentamentos_incra/FeatureServer/1" target="_blank" rel="noreferrer">Serviço geográfico · créditos INCRA ↗</a></div></article>
-        </div>
-        <p class="data-caveat">A quantidade de famílias é um dado reportado em 2025, não um censo atual. O ponto da escola deriva do mapa institucional vinculado pela SEDUC-PI; o contorno é uma referência cadastral e pode não representar limites de uso ou posse. O mapa base e os filtros temáticos usam OpenStreetMap, uma base colaborativa com cobertura variável.</p>
-      </section>
-      <section class="principles" id="sobre"><div><p class="eyebrow">COMO LER ESTE PROTÓTIPO</p><h2>Dados com contexto,<br><em>decisões com cuidado.</em></h2></div><div class="principle-grid"><article><span>01</span><h3>Situar</h3><p>Localizar informações ajuda a observar como elementos se relacionam no espaço.</p></article><article><span>02</span><h3>Contextualizar</h3><p>Um mapa não explica tudo: a origem e o contexto de cada dado importam.</p></article><article><span>03</span><h3>Participar</h3><p>Conhecimentos locais podem enriquecer a compreensão do território com respeito e consentimento.</p></article></div></section>
-      <section class="scope-note"><strong>Sobre os dados</strong><p>Este protótipo combina uma notícia oficial estadual datada, uma localização escolar associada à SEDUC-PI e uma camada geográfica do INCRA consultada em serviço mantido pela PAMGIA/IBAMA. Os registros criados por você continuam temporários e servem apenas para demonstrar a interação. Não houve levantamento de campo nem validação comunitária.</p></section>
-    </main>
-    <footer><a class="footer-brand" href="#inicio">terra<span>em</span>dados</a><span>Projeto Integrador · Geotecnologias e comunidades rurais</span><a href="#sobre">Conheça a proposta ↑</a></footer>
+    <section class="participation section-shell" id="participar"><p class="section-kicker">Participação</p><h2>Como participar?</h2>
+      <div class="participation-grid">
+        <article><span class="participation-number">01</span><span class="participation-icon">◎</span><h3>Consulte</h3><p>Explore as informações disponíveis e observe como elas se relacionam no território.</p><a href="#mapa">Explorar filtros →</a></article>
+        <article><span class="participation-number">02</span><span class="participation-icon">➤</span><h3>Contribua</h3><p>Este protótipo permite marcar pontos temporários para demonstrar uma futura contribuição.</p><a href="#mapa">Criar ponto de demonstração →</a></article>
+        <article><span class="participation-number">03</span><span class="participation-icon">♢</span><h3>Moderação</h3><p>Publicações comunitárias exigem consentimento, validação e regras de moderação que ainda não estão implementados.</p><a href="#sobre">Entenda os limites →</a></article>
+      </div>
+    </section>
 
-    <dialog id="recordDialog" class="dialog"><form method="dialog" id="recordForm"><button class="dialog-close" value="cancel" aria-label="Fechar">×</button><p class="eyebrow">NOVO REGISTRO DEMONSTRATIVO</p><h2>O que você observou?</h2><p class="dialog-coords" id="dialogCoords"></p><label for="recordTitle">Nome do ponto</label><input id="recordTitle" maxlength="70" required placeholder="Ex.: ponto de referência"><label for="recordNote">Contexto <span>opcional</span></label><textarea id="recordNote" rows="3" maxlength="240" placeholder="Acrescente uma observação breve"></textarea><div class="dialog-actions"><button class="button-quiet" value="cancel">Cancelar</button><button id="saveRecord" class="button-primary" value="default">Adicionar à sessão</button></div><p class="dialog-footnote">Este registro não será enviado ou salvo fora desta aba.</p></form></dialog>
+    <section class="local-data section-shell" aria-labelledby="localDataTitle">
+      <div class="local-data-heading"><div><p class="section-kicker">Contexto local · fonte pública</p><h2 id="localDataTitle">Um território com dados verificáveis</h2></div><span class="data-date">Fontes consultadas em 24 nov. 2026</span></div>
+      <div class="data-cards">
+        <article class="data-card"><span class="data-icon">⌂</span><div><strong>Mais de 100</strong><h3>famílias no assentamento</h3><p>A maioria descrita como agricultores familiares em notícia oficial de 7 out. 2025.</p><a href="https://www.pi.gov.br/governo-do-estado-transforma-estrutura-de-escola-da-zona-rural-de-teresina-que-e-destaque-em-competicoes-de-educacao/" target="_blank" rel="noreferrer">Governo do Piauí · notícia de 2025 ↗</a></div></article>
+        <article class="data-card"><span class="data-icon">◎</span><div><strong>Escola Lucas Meireles Alves</strong><h3>Referência territorial mapeada</h3><p>Localização associada ao mapa da SEDUC-PI: Assentamento 17 de Abril, zona rural de Teresina.</p><a href="https://seduc.pi.gov.br/noticias/noticia/13080/governador-rafael-fonteles-e-secretario-washington-bandeira-inauguram-reforma-e-moderniza-ao-de-escola-em-assentamento-na-zona-rural-de-teresina" target="_blank" rel="noreferrer">SEDUC-PI · fonte institucional ↗</a></div></article>
+        <article class="data-card"><span class="data-icon">▱</span><div><strong>Perímetro do assentamento</strong><h3>Camada geográfica do INCRA</h3><p>Serviço cadastral sem data de atualização indicada no metadata consultado.</p><a href="https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/assentamentos_incra/FeatureServer/1" target="_blank" rel="noreferrer">Serviço geográfico · créditos INCRA ↗</a></div></article>
+      </div>
+      <p class="data-caveat">O dado de famílias é de 2025 e não representa censo atual. O perímetro é referência cadastral, não confirmação de posse ou uso. Feições OSM dependem de mapeamento colaborativo; ausência no mapa não prova ausência no território.</p>
+    </section>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="app.js" defer></script>
-  </body>
+    <section class="about section-shell" id="sobre"><p class="section-kicker">Sobre o projeto</p><h2>Dados com contexto,<br><em>decisões com cuidado.</em></h2><p>Terra em Dados é um protótipo demonstrativo do Projeto Integrador de Geotecnologias e comunidades rurais. Os filtros consultam feições públicas do OpenStreetMap, e a escola e o perímetro do assentamento são exibidos com suas fontes institucionais. A aplicação ainda não recebe contribuições comunitárias nem substitui levantamento local.</p><a href="docs/fontes-e-dados-territoriais.md" target="_blank" rel="noreferrer">Consultar registro das fontes e limitações ↗</a></section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-project"><a class="brand footer-brand" href="#inicio"><span class="brand-mark" aria-hidden="true">⌖</span><strong>terra em dados<span>.</span></strong></a><p>Geotecnologias e inteligência territorial para comunidades rurais. Projeto Integrador do CETI Lucas Meireles Alves, Piauí.</p></div><div><h3>Plataforma</h3><a href="#sobre">Sobre o projeto</a><a href="#participar">Como participar</a><a href="docs/fontes-e-dados-territoriais.md">Fontes e dados</a></div><div><h3>Créditos cartográficos</h3><p>Mapas e feições: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">colaboradores do OpenStreetMap</a>, sob licença ODbL.</p><p>Perímetro: camada Assentamentos — INCRA via PAMGIA/IBAMA.</p></div></footer>
+
+  <dialog id="recordDialog" class="dialog"><form method="dialog" id="recordForm"><button class="dialog-close" value="cancel" aria-label="Fechar">×</button><p class="panel-kicker">NOVO REGISTRO DEMONSTRATIVO</p><h2>O que você observou?</h2><p class="dialog-coords" id="dialogCoords"></p><label for="recordTitle">Nome do ponto</label><input id="recordTitle" maxlength="70" required placeholder="Ex.: ponto de referência"><label for="recordNote">Contexto <span>opcional</span></label><textarea id="recordNote" rows="3" maxlength="240" placeholder="Acrescente uma observação breve"></textarea><div class="dialog-actions"><button class="button-secondary" value="cancel">Cancelar</button><button id="saveRecord" class="button-primary" value="default">Adicionar à sessão</button></div><p class="dialog-footnote">Este registro não será enviado ou salvo fora desta aba.</p></form></dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js" defer></script>
+</body>
 </html>
