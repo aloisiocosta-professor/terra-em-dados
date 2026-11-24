@@ -184,7 +184,7 @@ async function requestOsmLayer(category, force = false) {
       count += 1;
     }
     loadedCenters.set(category, center);
-    setLayerStatus(category, `${count} feições`);
+    setLayerStatus(category, category === 'educacao' ? `${count} OSM + 1 referência SEDUC-PI` : `${count} feições`);
     hint.textContent = `${layerNames[category]}: ${count} feições encontradas em raio de 2 km do centro do mapa. A cobertura OSM local pode variar.`;
     return true;
   }).catch(error => {
