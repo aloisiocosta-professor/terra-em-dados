@@ -1,7 +1,47 @@
 const layerNames = { ambiente: 'Recursos naturais', acessos: 'Estradas e acessos', comunidade: 'Serviços comunitários', producao: 'Áreas produtivas' };
 const layerColors = { ambiente: '#438363', acessos: '#9a8742', comunidade: '#b57751', producao: '#83923c' };
-const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([0, 0], 2);
+const schoolPoint = [-5.3001571, -42.743763];
+const initialCenter = schoolPoint;
+const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView(initialCenter, 14);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+
+const schoolMarker = L.circleMarker(schoolPoint, { radius: 8, weight: 3, color: '#fffaf0', fillColor: '#c95d32', fillOpacity: 1 }).addTo(map);
+schoolMarker.bindPopup('<strong>CETI Lucas Meireles Alves</strong><br>Assentamento 17 de Abril · Teresina/PI<br><small>Localização vinculada pela SEDUC-PI</small><br><a href="https://seduc.pi.gov.br/noticias/noticia/13080/governador-rafael-fonteles-e-secretario-washington-bandeira-inauguram-reforma-e-moderniza-ao-de-escola-em-assentamento-na-zona-rural-de-teresina" target="_blank" rel="noreferrer">Consultar fonte institucional</a>');
+const boundaryLayer = L.geoJSON(null, { style: { color: '#174c45', weight: 2.5, fillColor: '#8ea56d', fillOpacity: 0.2 } }).addTo(map);
+const boundaryToggle = document.getElementById('boundaryToggle');
+const boundaryStatus = document.getElementById('boundaryStatus');
+const legendDisclaimer = document.getElementById('legendDisclaimer');
+const boundaryQuery = 'https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/assentamentos_incra/FeatureServer/1/query?geometry=-42.743763%2C-5.3001571&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=assentamento%2Cnome_proje%2Cmunicipio%2Cuf%2Carea_hecta%2Cnum_famili%2Ccd_sipra&returnGeometry=true&outSR=4326&f=geojson';
+let boundaryPromise;
+async function loadBoundary() {
+  if (!boundaryPromise) boundaryPromise = fetch(boundaryQuery, { headers: { Accept: 'application/geo+json, application/json' } }).then(response => {
+    if (!response.ok) throw new Error('Serviço geográfico indisponível');
+    return response.json();
+  }).then(data => {
+    const features = data.features ?? [];
+    const match = features.find(feature => /17 de abril/i.test(Object.values(feature.properties ?? {}).join(' ')));
+    if (!match) throw new Error('O serviço não retornou polígono para este ponto');
+    const layer = L.geoJSON(match, { style: { color: '#174c45', weight: 2.5, fillColor: '#8ea56d', fillOpacity: 0.2 } }).addTo(boundaryLayer);
+    const properties = match.properties ?? {};
+    layer.bindPopup('<strong>' + escapeHTML(properties.assentamento || properties.nome_proje || 'Assentamento 17 de Abril') + '</strong><br>' + escapeHTML(properties.municipio || 'Teresina') + ' · ' + escapeHTML(properties.uf || 'PI') + '<br><small>Polígono cadastral · camada creditada ao INCRA</small>');
+    boundaryStatus.textContent = 'Polígono carregado';
+    legendDisclaimer.textContent = 'Perímetro cadastral INCRA';
+    if (!boundaryToggle.checked) map.removeLayer(boundaryLayer);
+    return true;
+  }).catch(() => {
+    boundaryStatus.textContent = 'Limite indisponível';
+    legendDisclaimer.textContent = 'INCRA indisponível nesta sessão';
+    return false;
+  });
+  return boundaryPromise;
+}
+loadBoundary();
+boundaryToggle.addEventListener('change', async () => {
+  if (boundaryToggle.checked) {
+    const loaded = await loadBoundary();
+    if (loaded) boundaryLayer.addTo(map);
+  } else map.removeLayer(boundaryLayer);
+});
 
 const layers = new Map();
 const records = [];
@@ -105,11 +145,11 @@ document.getElementById('searchForm').addEventListener('submit', async event => 
 });
 
 document.getElementById('resetView').addEventListener('click', () => {
-  map.setView([0, 0], 2);
-  mapLocation.textContent = 'Nenhuma área selecionada';
+  map.setView(initialCenter, 14);
+  mapLocation.textContent = 'Assentamento 17 de Abril · Teresina/PI';
   status.textContent = 'Visão geral';
   searchedLocation = '';
-  instruction.classList.remove('hidden');
+  instruction.classList.add('hidden');
   setTimeout(() => map.invalidateSize(), 100);
 });
 
