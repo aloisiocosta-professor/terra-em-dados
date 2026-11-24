@@ -34,3 +34,22 @@ A consulta espacial da camada do INCRA usa o ponto da escola, sistema de entrada
 ## Reprodutibilidade
 
 Data de busca e inspeção: **24/11/2026**. As camadas geográficas são consultadas remotamente e podem mudar ou ficar temporariamente indisponíveis; se a consulta falhar, o protótipo informa a indisponibilidade e mantém o marcador da escola e as referências de origem.
+
+## Categorias dos filtros do mapa
+
+Os filtros temáticos consultam feições OpenStreetMap dentro de **3 km do centro visível do mapa**. A consulta só é feita quando um filtro é ativado; se o usuário deslocar o mapa mais de 1,5 km, as camadas ativas são atualizadas. O protótipo consulta a instância pública mantida por Private.coffee: https://overpass.private.coffee/ (API: https://overpass.private.coffee/api/interpreter). É um serviço comunitário sem garantia de disponibilidade; a página fornece estados de carregamento, quantidade encontrada e indisponibilidade.
+
+| Filtro | Tags OSM selecionadas | Representação visual |
+|---|---|---|
+| Água e recursos hídricos | `natural=water/spring/hot_spring`, `waterway=*`, `water=lake/pond/reservoir`, `landuse=reservoir` | Linhas e áreas em azul; nascentes e pontos como marcadores. |
+| Estradas e acessibilidade | `highway=*` em vias (ways) | Linhas em terracota; vias principais com traço mais espesso. |
+| Educação | `amenity=school/college/university/kindergarten/training` | Marcadores e áreas em azul; inclui o ponto do CETI da SEDUC-PI. |
+| Saúde | `amenity=hospital/clinic/doctors/dentist/pharmacy` e `healthcare=*` | Marcadores e áreas em vermelho. |
+| Produção rural | `landuse=farmland/farmyard/orchard/vineyard/plant_nursery` | Polígonos em ocre. |
+| Meio ambiente | `natural=wood/scrub/wetland/grassland/heath`, `landuse=forest/grass/meadow`, `leisure=park/nature_reserve/garden` | Áreas e linhas em verde. |
+| Espaços comunitários | `amenity=community_centre/social_centre/social_facility/place_of_worship`, `leisure=sports_centre/sports_hall` | Marcadores e áreas em violeta. |
+| Infraestrutura e serviços | `amenity=post_office/police/fire_station/drinking_water/water_point/toilets/waste_disposal/marketplace/bus_station`, `man_made=water_tower/water_well/communications_tower`, `power=substation/plant` | Marcadores e áreas em azul-ardósia. |
+
+A cor da camada corresponde à cor do controle temático. Popups informam o nome, tags relevantes e identificador da feição no OSM. Uma feição recebe uma categoria principal para evitar desenho duplicado. O protótipo consulta nós e vias; áreas complexas mapeadas somente como relações podem não aparecer. O limite de 3 km e a seleção de tags são filtros de visualização do protótipo, não uma classificação oficial do território.
+
+A base segue o modelo colaborativo e licença ODbL do OpenStreetMap. A aplicação mantém a atribuição no mapa e no rodapé. Categorias com zero feições mostram esse resultado sem inferir ausência física do recurso. Tags e cobertura local podem variar; não há validação de campo.
