@@ -37,7 +37,7 @@ Data de busca e inspeção: **24/11/2026**. As camadas geográficas são consult
 
 ## Categorias dos filtros do mapa
 
-Os filtros temáticos consultam feições OpenStreetMap dentro de **2 km do centro visível do mapa**. A consulta só é feita quando um filtro é ativado; se o usuário deslocar o mapa mais de 1,5 km, as camadas ativas são atualizadas. O protótipo consulta somente a categoria ativada, com chamadas sequenciais, à instância pública mantida por Private.coffee: https://overpass.private.coffee/ (API: https://overpass.private.coffee/api/interpreter). É um serviço comunitário sem garantia de disponibilidade; a página fornece estados de carregamento, quantidade encontrada e indisponibilidade.
+Os filtros temáticos consultam feições OpenStreetMap dentro de **2 km do centro visível do mapa**. A consulta só é feita quando um filtro é ativado; se o usuário deslocar o mapa mais de 1,5 km, as camadas ativas são atualizadas. O protótipo consulta somente a categoria ativada, com chamadas sequenciais, à instância pública de Overpass para a América do Sul, operada por ovp.dresel.systems: https://ovp.dresel.systems/ (API regional: https://ovp.dresel.systems/api-sa/interpreter). O operador informa CORS aberto, atualização regular e limite de quatro consultas paralelas por IP e região; não oferece garantia de disponibilidade. É um serviço comunitário sem garantia de disponibilidade; a página fornece estados de carregamento, quantidade encontrada e indisponibilidade.
 
 | Filtro | Tags OSM selecionadas | Representação visual |
 |---|---|---|
