@@ -8,5 +8,6 @@ await mkdir(output, { recursive: true });
 for (const file of ['index.html', 'styles.css', 'app.js']) {
   await cp(new URL(file, root), new URL(file, output));
 }
-console.log('Site est�tico gerado em dist/.');
+await cp(new URL('docs/', root), new URL('docs/', output), { recursive: true });
+console.log('Site estático e documentação gerados em dist/.');
 
