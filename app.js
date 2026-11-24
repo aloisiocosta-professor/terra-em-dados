@@ -1,4 +1,4 @@
-const layerNames = { ambiente: '�gua e ambiente', acessos: 'Acessos e caminhos', comunidade: 'Vida comunit�ria', producao: 'Produ��o e trabalho' };
+const layerNames = { ambiente: 'Recursos naturais', acessos: 'Estradas e acessos', comunidade: 'Serviços comunitários', producao: 'Áreas produtivas' };
 const layerColors = { ambiente: '#438363', acessos: '#9a8742', comunidade: '#b57751', producao: '#83923c' };
 const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([0, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
@@ -20,7 +20,7 @@ for (const input of layerInputs) {
   input.addEventListener('change', () => {
     activeLayer = layerInputs.find(item => item.checked)?.dataset.layer ?? '';
     document.getElementById('layerCount').textContent = `${layerInputs.filter(item => item.checked).length} ativas`;
-    document.getElementById('mapStatus').textContent = activeLayer ? `Camada: ${layerNames[activeLayer]}` : 'Vis�o geral';
+    document.getElementById('mapStatus').textContent = activeLayer ? `Camada: ${layerNames[activeLayer]}` : 'Visão geral';
   });
 }
 
@@ -31,7 +31,7 @@ map.on('click', event => {
     return;
   }
   pendingPoint = event.latlng;
-  document.getElementById('dialogCoords').textContent = `${event.latlng.lat.toFixed(5)}, ${event.latlng.lng.toFixed(5)} � ${layerNames[activeLayer]}`;
+  document.getElementById('dialogCoords').textContent = `${event.latlng.lat.toFixed(5)}, ${event.latlng.lng.toFixed(5)} · ${layerNames[activeLayer]}`;
   document.getElementById('recordTitle').value = '';
   document.getElementById('recordNote').value = '';
   dialog.showModal();
@@ -61,10 +61,10 @@ function renderRecords() {
   const clear = document.getElementById('clearRecords');
   clear.disabled = records.length === 0;
   if (!records.length) {
-    list.innerHTML = '<div class="empty-state"><span>?</span><p>Nenhum ponto marcado ainda.</p><small>Escolha uma camada e clique no mapa para criar um registro demonstrativo.</small></div>';
+    list.innerHTML = '<div class="empty-state"><span>⌖</span><p>Nenhum ponto marcado ainda.</p><small>Escolha uma camada e clique no mapa para criar um registro demonstrativo.</small></div>';
     return;
   }
-  list.innerHTML = records.map((record, index) => `<div class="record"><i class="record-bullet" style="background:${layerColors[record.layer]}"></i><div><strong>${escapeHTML(record.title)}</strong><small>${escapeHTML(layerNames[record.layer])} � ${record.point.lat.toFixed(3)}, ${record.point.lng.toFixed(3)}</small></div><button class="record-focus" data-index="${index}" aria-label="Centralizar ${escapeHTML(record.title)}">?</button></div>`).join('');
+  list.innerHTML = records.map((record, index) => `<div class="record"><i class="record-bullet" style="background:${layerColors[record.layer]}"></i><div><strong>${escapeHTML(record.title)}</strong><small>${escapeHTML(layerNames[record.layer])} · ${record.point.lat.toFixed(3)}, ${record.point.lng.toFixed(3)}</small></div><button class="record-focus" data-index="${index}" aria-label="Centralizar ${escapeHTML(record.title)}">↗</button></div>`).join('');
   list.querySelectorAll('.record-focus').forEach(button => button.addEventListener('click', () => {
     const record = records[Number(button.dataset.index)];
     map.setView(record.point, Math.max(map.getZoom(), 14));
@@ -82,32 +82,32 @@ document.getElementById('searchForm').addEventListener('submit', async event => 
   event.preventDefault();
   const query = document.getElementById('placeSearch').value.trim();
   if (!query) return;
-  hint.textContent = 'Buscando localidade.';
+  hint.textContent = 'Buscando localidade…';
   try {
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`, { headers: { Accept: 'application/json' } });
-    if (!response.ok) throw new Error('Busca indispon�vel');
+    if (!response.ok) throw new Error('Busca indisponível');
     const results = await response.json();
     if (!results.length) {
-      hint.textContent = 'N�o encontramos esse lugar. Tente informar cidade e estado.';
+      hint.textContent = 'Não encontramos esse lugar. Tente informar cidade e estado.';
       return;
     }
     const result = results[0];
     searchedLocation = result.name || query;
     map.setView([Number(result.lat), Number(result.lon)], 13);
     mapLocation.textContent = searchedLocation;
-    status.textContent = '�rea aproximada';
+    status.textContent = 'Área aproximada';
     instruction.classList.add('hidden');
-    hint.textContent = '�rea aproximada pela busca. Confirme o local antes de usar qualquer informa��o.';
+    hint.textContent = 'Área aproximada pela busca. Confirme o local antes de usar qualquer informação.';
     setTimeout(() => map.invalidateSize(), 100);
   } catch {
-    hint.textContent = 'A busca n�o est� dispon�vel agora. Confira sua conex�o e tente novamente.';
+    hint.textContent = 'A busca não está disponível agora. Confira sua conexão e tente novamente.';
   }
 });
 
 document.getElementById('resetView').addEventListener('click', () => {
   map.setView([0, 0], 2);
-  mapLocation.textContent = 'Nenhuma �rea selecionada';
-  status.textContent = 'Vis�o geral';
+  mapLocation.textContent = 'Nenhuma área selecionada';
+  status.textContent = 'Visão geral';
   searchedLocation = '';
   instruction.classList.remove('hidden');
   setTimeout(() => map.invalidateSize(), 100);
@@ -115,21 +115,20 @@ document.getElementById('resetView').addEventListener('click', () => {
 
 document.getElementById('locateMe').addEventListener('click', () => {
   if (!navigator.geolocation) {
-    hint.textContent = 'Este navegador n�o oferece geolocaliza��o.';
+    hint.textContent = 'Este navegador não oferece geolocalização.';
     return;
   }
-  hint.textContent = 'Aguardando permiss�o de localiza��o.';
+  hint.textContent = 'Aguardando permissão de localização…';
   navigator.geolocation.getCurrentPosition(position => {
     const point = [position.coords.latitude, position.coords.longitude];
     map.setView(point, 14);
-    mapLocation.textContent = 'Sua localiza��o aproximada';
-    status.textContent = '�rea aproximada';
+    mapLocation.textContent = 'Sua localização aproximada';
+    status.textContent = 'Área aproximada';
     instruction.classList.add('hidden');
-    hint.textContent = 'A localiza��o foi usada apenas para centralizar o mapa nesta sess�o.';
+    hint.textContent = 'A localização foi usada apenas para centralizar o mapa nesta sessão.';
   }, () => {
-    hint.textContent = 'N�o foi poss�vel acessar a localiza��o. Voc� pode buscar um lugar pelo nome.';
+    hint.textContent = 'Não foi possível acessar a localização. Você pode buscar um lugar pelo nome.';
   }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
 });
 
 setTimeout(() => map.invalidateSize(), 150);
-
