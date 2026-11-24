@@ -76,7 +76,7 @@ boundaryToggle.addEventListener('change', async () => {
   } else map.removeLayer(boundaryLayer);
 });
 
-const overpassEndpoint = 'https://overpass.private.coffee/api/interpreter';
+const overpassEndpoint = 'https://ovp.dresel.systems/api-sa/interpreter';
 const dataRadius = 2000;
 const tagRules = [
   { category: 'agua', key: 'natural', values: '^(water|spring|hot_spring)$' },
