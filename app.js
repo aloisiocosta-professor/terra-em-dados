@@ -76,9 +76,9 @@ boundaryToggle.addEventListener('change', async () => {
 });
 
 const overpassEndpoint = 'https://overpass.private.coffee/api/interpreter';
-const dataRadius = 3000;
+const dataRadius = 2000;
 const tagRules = [
-  { category: 'agua', key: 'natural', values: '^(water|spring|hot_spring)
+  { category: 'agua', key: 'natural', values: '^(water|spring|hot_spring)$' },
   { category: 'agua', key: 'waterway' },
   { category: 'agua', key: 'water', values: '^(lake|pond|reservoir)$' },
   { category: 'agua', key: 'landuse', values: 'reservoir' },
@@ -96,16 +96,17 @@ const tagRules = [
   { category: 'infraestrutura', key: 'man_made', values: '^(water_tower|water_well|communications_tower)$' },
   { category: 'infraestrutura', key: 'power', values: '^(substation|plant)$' }
 ];
-function overpassQuery(center) {
+const loadedCenters = new Map();
+const loadingLayers = new Map();
+let queryQueue = Promise.resolve();
+function overpassQuery(center, category) {
   const around = `(around:${dataRadius},${center.lat.toFixed(5)},${center.lng.toFixed(5)})`;
-  const selectors = [];
-  for (const rule of tagRules) {
-    const value = rule.values ? `~"${rule.values}"` : '';
-    const selector = `["${rule.key}"${value}]`;
-    if (!rule.waysOnly) selectors.push(`node${around}${selector};`);
-    selectors.push(`way${around}${selector};`);
-  }
-  return `[out:json][timeout:25];(\n${selectors.join('\n')}\n);out body geom;`;
+  const rules = tagRules.filter(rule => rule.category === category);
+  const selectors = rules.flatMap(rule => {
+    const tag = rule.values ? `["${rule.key}"~"${rule.values}"]` : `["${rule.key}"]`;
+    return rule.waysOnly ? [`way${around}${tag};`] : [`node${around}${tag};`, `way${around}${tag};`];
+  });
+  return `[out:json][timeout:15];(\n${selectors.join('\n')}\n);out body geom;`;
 }
 function categoryFor(tags) {
   if (tags.highway) return 'acessos';
@@ -132,8 +133,9 @@ function featureFromElement(element) {
   return { type: 'Feature', id: `${element.type}/${element.id}`, properties: { ...tags, osm_type: element.type, osm_id: element.id }, geometry };
 }
 function styleForFeature(feature) {
-  const color = layerColors[categoryFor(feature.properties)] || '#56766c';
-  return { color, weight: categoryFor(feature.properties) === 'acessos' ? 2.6 : 1.8, opacity: 0.88, fillColor: color, fillOpacity: 0.32 };
+  const category = categoryFor(feature.properties);
+  const color = layerColors[category] || '#56766c';
+  return { color, weight: category === 'acessos' ? 2.6 : 1.8, opacity: 0.88, fillColor: color, fillOpacity: 0.32 };
 }
 function popupForFeature(feature) {
   const tags = feature.properties;
@@ -145,51 +147,58 @@ function setLayerStatus(layer, text) {
   const target = document.querySelector(`[data-layer-status="${layer}"]`);
   if (target) target.textContent = text;
 }
-function setSelectedStatuses(text) {
-  for (const input of layerInputs) if (input.checked) setLayerStatus(input.dataset.layer, text);
+function errorStatus(error) {
+  const code = String(error?.message ?? '').match(/HTTP \d+/)?.[0];
+  return code ? `Indisponível (${code})` : 'Sem resposta do serviço';
 }
-async function loadOsmLayers(force = false) {
+async function requestOsmLayer(category, force = false) {
   const center = map.getCenter();
-  if (!force && loadedCenter && loadedCenter.distanceTo(center) < 1000) return true;
-  if (loadPromise) return loadPromise;
-  setSelectedStatuses('Carregando dados…');
-  loadPromise = fetch(overpassEndpoint, {
+  const previousCenter = loadedCenters.get(category);
+  if (!force && previousCenter && previousCenter.distanceTo(center) < 1000) return true;
+  if (loadingLayers.has(category)) return loadingLayers.get(category);
+  setLayerStatus(category, 'Carregando feições…');
+  const request = fetch(overpassEndpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Accept: 'application/json' },
-    body: `data=${encodeURIComponent(overpassQuery(center))}`
+    body: `data=${encodeURIComponent(overpassQuery(center, category))}`
   }).then(response => {
-    if (!response.ok) throw new Error(`Overpass HTTP ${response.status}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
   }).then(data => {
-    if (data.remark) throw new Error('Consulta indisponível ou limitada pelo serviço');
-    for (const group of layerGroups.values()) group.clearLayers();
-    layerGroups.get('educacao').addLayer(schoolMarker);
+    if (data.remark) throw new Error('Consulta limitada pelo serviço');
+    const group = layerGroups.get(category);
+    group.clearLayers();
+    if (category === 'educacao') group.addLayer(schoolMarker);
     const seen = new Set();
-    const counts = Object.fromEntries(categories.map(category => [category, 0]));
+    let count = 0;
     for (const element of data.elements ?? []) {
       const feature = featureFromElement(element);
-      if (!feature || seen.has(feature.id)) continue;
+      if (!feature || seen.has(feature.id) || categoryFor(feature.properties) !== category) continue;
       seen.add(feature.id);
-      const category = categoryFor(feature.properties);
-      if (!category) continue;
-      const options = {
+      L.geoJSON(feature, {
         style: styleForFeature,
         pointToLayer: (_feature, latlng) => L.circleMarker(latlng, { ...styleForFeature(_feature), radius: 6 }),
         onEachFeature: (item, leafletLayer) => leafletLayer.bindPopup(popupForFeature(item))
-      };
-      L.geoJSON(feature, options).addTo(layerGroups.get(category));
-      counts[category] += 1;
+      }).addTo(group);
+      count += 1;
     }
-    loadedCenter = center;
-    for (const category of categories) setLayerStatus(category, `${counts[category]} feições`);
-    hint.textContent = `Filtros OpenStreetMap: feições encontradas em raio de 3 km do centro do mapa. Cobertura local pode variar.`;
+    loadedCenters.set(category, center);
+    setLayerStatus(category, `${count} feições`);
+    hint.textContent = `${layerNames[category]}: ${count} feições encontradas em raio de 2 km do centro do mapa. A cobertura OSM local pode variar.`;
     return true;
-  }).catch(() => {
-    setSelectedStatuses('Dados indisponíveis');
-    hint.textContent = 'As feições OpenStreetMap não puderam ser consultadas nesta sessão. Tente novamente mais tarde; cobertura e disponibilidade variam.';
+  }).catch(error => {
+    setLayerStatus(category, errorStatus(error));
+    hint.textContent = `Não foi possível consultar “${layerNames[category]}” agora. A fonte pública pode estar ocupada ou indisponível; tente novamente mais tarde.`;
+    console.warn('Consulta temática OpenStreetMap falhou:', category, error?.message ?? error);
     return false;
-  }).finally(() => { loadPromise = null; });
-  return loadPromise;
+  }).finally(() => { loadingLayers.delete(category); });
+  loadingLayers.set(category, request);
+  return request;
+}
+function loadOsmLayer(category, force = false) {
+  const next = queryQueue.catch(() => {}).then(() => requestOsmLayer(category, force));
+  queryQueue = next.catch(() => {});
+  return next;
 }
 function updateLayerControls() {
   const selected = layerInputs.filter(input => input.checked);
@@ -206,7 +215,7 @@ for (const input of layerInputs) {
       recordsGroup.addTo(map);
       setLayerStatus(input.dataset.layer, 'Carregando dados…');
       updateLayerControls();
-      await loadOsmLayers();
+      await loadOsmLayer(input.dataset.layer);
     } else {
       map.removeLayer(group);
       map.removeLayer(recordsGroup);
@@ -218,7 +227,11 @@ for (const input of layerInputs) {
 map.on('moveend', () => {
   clearTimeout(moveTimer);
   moveTimer = setTimeout(() => {
-    if (layerInputs.some(input => input.checked) && loadedCenter && loadedCenter.distanceTo(map.getCenter()) > 1500) loadOsmLayers(true);
+    if (layerInputs.some(input => input.checked)) {
+      const center = map.getCenter();
+      const refreshed = categories.filter(category => layerInputs.some(input => input.checked && input.dataset.layer === category) && loadedCenters.get(category)?.distanceTo(center) > 1500);
+      refreshed.reduce((queue, category) => queue.then(() => loadOsmLayer(category, true)), Promise.resolve());
+    }
   }, 900);
 });
 map.on('click', event => {
