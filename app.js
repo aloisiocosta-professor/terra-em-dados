@@ -15,7 +15,8 @@ const layerColors = {
 const schoolPoint = [-5.3001571, -42.743763];
 const initialCenter = schoolPoint;
 const previewMap = L.map('previewMap', { zoomControl: false, scrollWheelZoom: false, dragging: false, doubleClickZoom: false, boxZoom: false, keyboard: false, tap: false }).setView(schoolPoint, 6);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(previewMap);\nL.circleMarker(schoolPoint, { radius: 6, weight: 2, color: '#fffaf0', fillColor: '#b64d2c', fillOpacity: 1 }).addTo(previewMap);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(previewMap);
+L.circleMarker(schoolPoint, { radius: 6, weight: 2, color: '#fffaf0', fillColor: '#b64d2c', fillOpacity: 1 }).addTo(previewMap);
 const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView(initialCenter, 14);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
 
